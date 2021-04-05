@@ -41,7 +41,18 @@ main:
  #You can add labels as you wish
 #remember to preserve the save registers and the $ra according to slide 76 of https://course.cse.ust.hk/comp2611/note/COMP2611_ISA_Spring21.pdf       
 strlen:
-
+	addi $t0, $0, 10	# $t0 store 10 (ascii '\n')
+	add $t1, $0, $0		# $t1 is iterator
+loop:	
+	add $t2, $a0, $t1	# $t2 is addr(str[i])
+	lbu $t3, 0($t2)		# $t3 is str[i]
+	beq $t3, $t0, loop_exit
+	addi $t1, $t1, 1	# $t1 ++
+	j loop
+	
+loop_exit:
+	add $v0, $0, $t1	# $t1 is just the length
+	
         jr $ra
 ### TODO ABOVE
 	
@@ -54,7 +65,30 @@ strlen:
 #You can add labels as you wish
 #remember to preserve the save registers and the $ra according to slide 76 of https://course.cse.ust.hk/comp2611/note/COMP2611_ISA_Spring21.pdf       
 isPalindrome:
+	add $t0, $0, $0		# $t0 is iterator
+	srl $t1, $a1, 1		# $t1 is n/2
+	
+for_start:	
+	beq $t0, $t1, for_exit
+	
+	add $t2, $a0, $t0	# $t2 is addr(str[i])
+	lbu $t3, 0($t2)		# $t3 is str[i]
+	
+	add $t2, $a0, $a1
+	addi $t2, $t2, -1
+	sub $t2, $t2, $t0	# $t2 is addr(str[n - 1 - i])
+	lbu $t4, 0($t2)		# $t4 is str[n - 1 - i]
+	
+	bne $t3, $t4, return_f	# if not equal, 'return_false'
+	
+	addi $t0, $t0, 1	# else, i++, goto 'for_start'
+	j for_start
 
+return_f:		
+	add $v0, $0, $0		
+	jr $ra
+for_exit:
+	addi $v0, $0, 1		# if reaches here, must be true
 	jr $ra
 ### TODO ABOVE
 	
