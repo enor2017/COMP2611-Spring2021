@@ -499,15 +499,15 @@ new_bullet:
 	j nb_exit
 
 nb_up_bullet:
-	sub $s1,$s1, $s3
-	sub $s1,$s1, $s3
+	sub $s1, $s1, $s3
+	sub $s2, $s2, $s3
 	sub $s2, $s2, $s3
 	subi $s2, $s2, 16
 	la $t0, bullet_locs
 	sw $s1, 0($t0)
 	sw $s2, 4($t0)
-	addi $v0, $s1,0
-	addi $v1, $s2,0
+	addi $v0, $s1, 0
+	addi $v1, $s2, 0
 	j nb_exit
 
 
@@ -518,9 +518,27 @@ nb_up_bullet:
 #*** Your code starts here
 
 nb_down_bullet:
+	sub $s1, $s1, $s3
+	add $s2, $s2, $s3
+	add $s2, $s2, $s3
+	addi $s2, $s2, 16
+	la $t0, bullet_locs
+	sw $s1, 0($t0)
+	sw $s2, 4($t0)
+	addi $v0, $s1, 0
+	addi $v1, $s2, 0
+	j nb_exit
 	
 
 nb_left_bullet:
+	add $s2, $s2, $s3
+	addi $s1, $s1, -16
+	la $t0, bullet_locs
+	sw $s1, 0($t0)
+	sw $s2, 4($t0)
+	addi $v0, $s1, 0
+	addi $v1, $s2, 0
+	j nb_exit
 
 #*** Your code ends here	
 
@@ -530,8 +548,8 @@ nb_right_bullet:
 	la $t0, bullet_locs
 	sw $s1, 0($t0)
 	sw $s2, 4($t0)
-	addi $v0, $s1,0
-	addi $v1, $s2,0
+	addi $v0, $s1, 0
+	addi $v1, $s2, 0
 	j nb_exit
 
 nb_exit:
@@ -1090,6 +1108,31 @@ pmi_change_dir:
 
 hit_border:
 #*** Your code starts here
+		la $t0, maze_size
+		lw $t1, 0($t0) 	# maze width
+		lw $t2, 4($t0) 	# maze height
+
+		slt $t3, $a1, $0  	# if y < 0, $t3 = 1
+		bne $t3, $0, hb_hit
+
+		add $t4, $a1, $a2	# y-cor of right-bottom
+		slt $t3, $t2, $t4 	# if height < y , $t3 = 1
+		bne $t3, $0, hb_hit
+
+		slt $t3, $a0, $0	# if x < 0, $t3 = 1
+		bne $t3, $0, hb_hit
+
+		add $t4, $a0, $a2	# x-cor of right-bottom
+		slt $t3, $t1, $t4 	# if width < x , $t3 = 1
+		bne $t3, $0, hb_hit
+
+		li $v0, 0
+		j hb_exit
+
+hb_hit:
+		li $v0, 1
+
+hb_exit:
 
 #*** Your code ends here
 	
