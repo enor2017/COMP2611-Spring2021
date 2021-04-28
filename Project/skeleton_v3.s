@@ -532,6 +532,7 @@ nb_down_bullet:
 
 nb_left_bullet:
 	add $s2, $s2, $s3
+	addi $s2, $s2, -6	# since (x,y) is left-top coordinate, need to minus bullet size
 	addi $s1, $s1, -16
 	la $t0, bullet_locs
 	sw $s1, 0($t0)
@@ -645,7 +646,7 @@ bm_exit:
 	jr $ra
 
 #--------------------------------------------------------------------
-# procedure: check_bullet_collision(x,y,size)
+# procedure: check_bullet_collision(x,y,half_size)
 # Check whether the bullet collides with border, enemys, brick wall, stone or home
 # collision type: 0:no collision; 1:brick wall; 2:border&stone; 4:enemy1; 5:enemy2; 8 or 9: home
 #--------------------------------------------------------------------
@@ -693,9 +694,28 @@ cbc_top_left_grid:
 # 4. get_bitmap_cell will return the location where the collision happens (the index of the bitmap cell)
 #*** Your code starts here
 cbc_top_right:
-	
+	add $a0, $s1, $s3
+	add $a0, $a0, $s3	
+	add $a1, $s2, $0
+	# addi $a1, $a1, -1 This line is removed
+	jal check_hit_enemy
+	add $a0,$v0,$zero
+	slt $v0, $zero, $v0 
+	beq $v0, $zero, cbc_top_right_grid
+	jal process_collision
 cbc_top_right_grid:
+	add $a0, $s1, $s3
+	add $a0, $a0, $s3	
+	addi $a0, $a0, -1 
+	add $a1, $s2, $0
+	jal get_bitmap_cell
+	add $a0,$v0,$zero
 	
+	slt $v0, $zero, $v0 
+	beq $v0, $zero, cbc_bottom_left
+
+	addi $a1, $v1,0
+	jal process_collision
 
 #*** Your code ends here
 
@@ -812,11 +832,54 @@ che_enemy1:
 # 3. calculate the y1=y0+32 and x1=x0+32
 # 4. Only if x0<x<x1 and y0<y<y1, return $v0=4 or return $v0=0
 #*** Your code starts here
+	la $t0, enemy1_alive
+	lw $t1, 0($t0)
+	beq $t1, $zero, che_enemy2 	# if enemy_1 not alive, check 2
+	la $t0, enemy1_locs
+	lw $t1, 0($t0)	# $t1 : x0
+	lw $t2, 4($t0)	# $t2 : y0
 
+	addi $t3, $t1, 32	# $t3 : x_1
+	addi $t4, $t2, 32	# $t4 : y_1
+
+	slt $t5, $t1, $a0
+	beq $t5, $0, che_enemy2		# if x0 >= x, not satisfied, check 2
+	slt $t5, $a0, $t3
+	beq $t5, $0, che_enemy2	
+	slt $t5, $t2, $a1
+	beq $t5, $0, che_enemy2	
+	slt $t5, $a1, $t4
+	beq $t5, $0, che_enemy2	
+	
+	li $v0, 4			# reaching here means collides, return 4.
+	j che_exit
 
 che_enemy2:
 # similar to che_enemy1
+	la $t0, enemy2_alive
+	lw $t1, 0($t0)
+	beq $t1, $zero, che_no_collide 	# if enemy_2 not alive, no_collide
+	la $t0, enemy2_locs
+	lw $t1, 0($t0)	# $t1 : x0
+	lw $t2, 4($t0)	# $t2 : y0
 
+	addi $t3, $t1, 32	# $t3 : x_1
+	addi $t4, $t2, 32	# $t4 : y_1
+
+	slt $t5, $t1, $a0
+	beq $t5, $0, che_no_collide		# if x0 >= x, not satisfied, no_collide
+	slt $t5, $a0, $t3
+	beq $t5, $0, che_no_collide	
+	slt $t5, $t2, $a1
+	beq $t5, $0, che_no_collide	
+	slt $t5, $a1, $t4
+	beq $t5, $0, che_no_collide	
+	
+	li $v0, 5			# reaching here means collides, return 5.
+	j che_exit
+
+che_no_collide:
+	li $v0, 0
 
 #*** Your code ends here
 che_exit:
