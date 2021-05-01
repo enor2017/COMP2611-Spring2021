@@ -1,0 +1,154 @@
+title = BattleCity Game
+width = 512
+height = 448
+mazeWidth = 416
+mazeHeight = 416
+bitmapColumn = 26
+bitmapRow = 26
+
+object1Size = 32
+object2Size = 32
+object3Size = 6
+object4Size = 6
+object5Size = 32
+object6Size = 32
+object7Size = 32
+obj7width=64
+
+
+type1=tank
+type2=enemy
+type3=bullet
+type4=enemyBullet
+ImageAll=/game/images/tankAll.gif
+// using mazeBitmap
+mazeBitmap2 		= 	/game/bitmap1.txt
+mazeBitmap 	= 	/game/bitmap1.bck.txt
+
+grass 		= 	/game/images/grass.png
+stone_wall 	= 	/game/images/stone_wall.png
+brick_wall 	= 	/game/images/brick_wall.png
+
+brick_wall_break1 	= 	/game/images/brick_wall_break1.png
+brick_wall_break2 	= 	/game/images/brick_wall_break2.png
+brick_wall_break3 	= 	/game/images/brick_wall_break3.png
+brick_wall_break4 	= 	/game/images/brick_wall_break4.png
+brick_wall_break5 	= 	/game/images/brick_wall_break5.png
+brick_wall_break6 	= 	/game/images/brick_wall_break6.png
+
+
+tile0 = /game/images/path1.png
+tile1 = /game/images/wall1.png
+
+
+// music has some error
+soundCount = 7
+sound0 = /game/sounds/start.wav
+sound1 = /game/sounds/move.wav
+sound2 = /game/sounds/playerCrack.wav
+sound3 = /game/sounds/prop.wav
+sound4 = /game/sounds/tankCrack.wav
+sound5 = /game/sounds/attack.wav
+sound6 = /game/sounds/bulletCrack.wav
+
+
+seekDistance = 210
+
+routeFile0 = /game/route0.txt
+// routeFile1 = /game/route1.txt
+// routeFile2 = /game/route2.txt
+// routeFile3 = /game/route3.txt
+
+
+// Type Info
+// type 0 for bomb
+// type 1 for bombman
+// type 2 for monster
+
+object*3 + string*2 = 5
+objectTypeCount = 10
+topObjectType = 4
+
+Bomb
+object0ImagePackCount = 1
+
+object0Pack0Image0 = /game/images/bomb_0.png
+object0Pack0Image1 = /game/images/bomb_1.png
+object0Pack0Image2 = /game/images/bomb_2.png
+
+blastCenterImage0 = /game/images/blast_center_0.png
+blastCenterImage1 = /game/images/blast_center_1.png
+blastCenterImage2 = /game/images/blast_center_2.png
+blastCenterImage3 = /game/images/blast_center_3.png
+
+blastMiddileImage0 = /game/images/blast_middle_0.png
+blastMiddileImage1 = /game/images/blast_middle_1.png
+blastMiddileImage2 = /game/images/blast_middle_2.png
+blastMiddileImage3 = /game/images/blast_middle_3.png
+
+blastEdgeImage0 = /game/images/blast_edge_0.png
+blastEdgeImage1 = /game/images/blast_edge_1.png
+blastEdgeImage2 = /game/images/blast_edge_2.png
+blastEdgeImage3 = /game/images/blast_edge_3.png
+
+
+
+
+//bullet
+object3ImagePackCount = 1
+
+object3Pack0Image0 = /game/images/bomb_0.png
+object3Pack0Image1 = /game/images/bomb_1.png
+object3Pack0Image2 = /game/images/bomb_2.png
+object3Pack0Image3 = /game/images/bomb_2.png
+
+//enemy bullet
+object4ImagePackCount = 1
+
+object4Pack0Image0 = /game/images/bomb_0.png
+object4Pack0Image1 = /game/images/bomb_1.png
+object4Pack0Image2 = /game/images/bomb_2.png
+object4Pack0Image3 = /game/images/bomb_2.png
+
+
+//Bombman, tank
+one pack -> one gif
+object1ImagePackCount = 1
+object1Pack0Image0 = /game/images/tankup.png
+object1Pack0Image2 = /game/images/tankdown.png
+object1Pack0Image1 = /game/images/tankleft.png
+object1Pack0Image3 = /game/images/tankright.png
+//oject1Pack0Image3 = /game/images/bombman_left_1.png
+//oject1Pack0Image4 = /game/images/bombman_left_2.png
+//oject1Pack0Image5 = /game/images/bombman_left_3.png
+//oject1Pack0Image6 = /game/images/bombman_right_1.png
+//oject1Pack0Image7 = /game/images/bombman_right_2.png
+//oject1Pack0Image8 = /game/images/bombman_right_3.png
+//oject1Pack0Image9 = /game/images/bombman_up_1.png
+//oject1Pack0Image10 = /game/images/bombman_up_2.png
+//oject1Pack0Image11 = /game/images/bombman_up_3.png
+
+
+// monster
+object2Speed = 2
+x1=0
+y1=0
+x2=384
+y2=0
+// how many packs
+object2ImagePackCount = 1
+one pack -> one gif
+
+object2Pack0Image0 = /game/images/lower-monster_0.png
+object2Pack0Image1 = /game/images/lower-monster_1.png
+object2Pack0Image2 = /game/images/lower-monster_2.png
+object2Pack0Image3 = /game/images/lower-monster_3.png
+object2Pack0Image4 = /game/images/lower-monster_4.png
+object2Pack0Image5 = /game/images/lower-monster_5.png
+
+object2Pack1Image0 = /game/images/lower-monster_11.png
+object2Pack1Image1 = /game/images/lower-monster_12.png
+object2Pack1Image2 = /game/images/lower-monster_13.png
+object2Pack1Image0 = /game/images/lower-monster_14.png
+object2Pack1Image1 = /game/images/lower-monster_15.png
+object2Pack1Image2 = /game/images/lower-monster_16.png

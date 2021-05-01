@@ -1,0 +1,1 @@
+jar cmf mainclass.txt NewMars_source.jar PseudoOps.txt Config.properties Syscall.properties Settings.properties MARSlicense.txt mainclass.txt MipsXRayOpcode.xml registerDatapath.xml controlDatapath.xml ALUcontrolDatapath.xml CreateNewsMarsJar_200Syscalls.sh CreateNewMarsSourceJar.sh Mars.java Mars.class docs help images mars CompileGameJava.sh game
