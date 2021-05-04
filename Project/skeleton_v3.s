@@ -1,3 +1,8 @@
+# 2021 Spring COMP2611 Project: Battle City
+# Name: LIU, Jianmeng
+# SID: 20760163
+# Email: jliudq@connect.ust.hk
+
 .data
 # game setting
 enemy_num: 		.word 	0	# the number of enemys
