@@ -295,7 +295,43 @@ ig_start:
 	li $v0, 103
 	syscall
 
+	### create prop: heart
+	li $a0, 10
+	li $a1, 160
+	li $a2, 160
+	li $a3, 10
+	li $v0, 103
+	syscall
+
+	### create prop: invincible
+	li $a0, 11
+	li $a1, 0
+	li $a2, 0
+	li $a3, 11
+	li $v0, 103
+	syscall
+
+	### create prop: speedup
+	li $a0, 12
+	li $a1, 16
+	li $a2, 16
+	li $a3, 12
+	li $v0, 103
+	syscall
+
+	### create prop: extrabullet
+	li $a0, 13
+	li $a1, 32
+	li $a2, 64
+	li $a3, 13
+	li $v0, 103
+	syscall
+
 ig_exit:
+	# li $a0, 30000 # iteration gap: 30 milliseconds
+	# jal have_a_nap
+	# j game_loop
+
 	li $v0, 101 # refresh the screen
 	syscall
 	lw $ra, 8($sp)

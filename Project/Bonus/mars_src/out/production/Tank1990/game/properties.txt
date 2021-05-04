@@ -21,6 +21,10 @@ type2=enemy
 type3=bullet
 type4=enemyBullet
 ImageAll=/game/images/tankAll.gif
+heartimg=/game/images/heart.png
+invimg=/game/images/invincible.png
+speedimg=/game/images/speed.png
+extrabulletimg=/game/images/extrabullet.png
 // using mazeBitmap
 mazeBitmap2 		= 	/game/bitmap1.txt
 mazeBitmap 	= 	/game/bitmap1.bck.txt
@@ -66,7 +70,7 @@ routeFile0 = /game/route0.txt
 // type 2 for monster
 
 object*3 + string*2 = 5
-objectTypeCount = 10
+objectTypeCount = 20
 topObjectType = 4
 
 Bomb

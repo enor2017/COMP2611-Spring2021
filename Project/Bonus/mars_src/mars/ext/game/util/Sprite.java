@@ -32,6 +32,9 @@ public class Sprite {
         return image.getSubimage(x, y, width, height);
     }
 
+    /*****  Get current Image  *****/
+    public BufferedImage getCurrentImage() { return image; }
+
     public BufferedImage[][] getImages() {return images;}
 
     public BufferedImage getImage(int x, int y) {return images[y][x];}

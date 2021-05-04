@@ -2,7 +2,8 @@
 /*    */ 
 /*    */ import mars.ProcessingException;
 /*    */ import mars.ProgramStatement;
-/*    */ import mars.ext.game.GameScreen;
+/*    */ import mars.ext.game.GameConfigFile;
+import mars.ext.game.GameScreen;
 /*    */ import mars.util.SystemIO;
 /*    */ 
 /*    */ 
@@ -18,6 +19,8 @@
 /*    */   public void simulate(ProgramStatement paramProgramStatement) throws ProcessingException {
 /*    */     try {
 /* 20 */       GameScreen.createIntance("/game/properties.txt");
+                /*****  Force construction of GameConfigFile to execute  *****/
+//               GameConfigFile file = new GameConfigFile();
 /*    */     }
 /* 22 */     catch (Exception exception) {
 /* 24 */       SystemIO.printString("In Creating Game, internal error has happened. Try restarting the MARS!");

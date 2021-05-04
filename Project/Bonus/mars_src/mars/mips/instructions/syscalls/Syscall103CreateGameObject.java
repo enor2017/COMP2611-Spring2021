@@ -70,7 +70,14 @@ import java.io.FileWriter;
 				GameConfigFile.playerPosiontions= mazeGameObject.tankPositions2();
 			}
              gameScreen.addGameObject(i, (GameObject)mazeGameObject, m);
-			
+
+			/*****  Create props Objects  *****/
+			//	10: heart, 11: invincible, 12: speedup, 13:extra_bullets
+			MazeGameObject prop_object = new MazeGameObject(i, j, k, m);
+			if(m >= 10 && m <= 13){
+				gameScreen.addGameObject(i, prop_object, m);
+			}
+
 /*    */   }
 
 /*    */ }

@@ -273,7 +273,12 @@ public class GameScreen extends JFrame {
         for (int i = topObjectType; i < gameObjs.size(); i++)
             for (Map.Entry<Integer, GameObject> entry : gameObjs.get(i).entrySet()) {
                 GameObject obj = entry.getValue();
-                obj.paint(g2);
+                /*****  Check if obj is null, since we left blank obj type numbers  *****/
+                if(obj != null) {
+                    System.out.println("Painting " + i + " at (" + obj.getXLoc() + ", " +
+                            obj.getYLoc() + ").");
+                    obj.paint(g2);
+                }
             }
     }
 

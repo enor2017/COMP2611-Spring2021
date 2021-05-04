@@ -1,5 +1,8 @@
 package mars.ext.game;
 
+import mars.ext.game.util.Sprite;
+
+import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.HashMap;
 import java.awt.Image;
@@ -22,6 +25,26 @@ public class GameConfigFile {
     static final int ICE = 5;
     static final int HOME = 9;
     static final int ANOTHREHOME = 8;
+
+    /********  Add Props  ***********/
+    static final int HEART = 10;
+    static final int INVINCIBLE = 11;
+    static final int SPEEDUP = 12;
+    static final int EXTRABULLETS = 13;
+    public static int[] heart_position = new int[2];
+    public static int[] invincible_position = new int[2];
+    public static int[] speedup_position = new int[2];
+    public static int[] extrabullets_position = new int[2];
+
+    /*****  Store props images  *****/
+    private final String heart_img_addr = "../../../game/images/heart.png";
+    private final String invincible_img_addr = "/game/images/invincible.png";
+    private final String speedup_img_addr = "/game/images/speed.png";
+    private final String extrabullets_img_addr = "/game/images/extrabullets.png";
+    public static BufferedImage heart_img;
+    public static BufferedImage invincible_img;
+    public static BufferedImage speedup_img;
+    public static BufferedImage extrabullets_img;
 
     static final int offsetX = 32; //主游戏区的X偏移量
     static final int offsetY = 16;//主游戏区的Y偏移量
@@ -70,9 +93,19 @@ public class GameConfigFile {
     }
 
 
-    private GameConfigFile() {
+    public GameConfigFile() {
         // TODO Auto-generated constructor stub
 
+        /*****  Load props images into BufferedImage variables.  *****/
+//        Sprite heart_spr = new Sprite(heart_img_addr);
+//        heart_img = heart_spr.getCurrentImage();
+//        Sprite inv_spr = new Sprite(invincible_img_addr);
+//        invincible_img = inv_spr.getCurrentImage();
+//        Sprite speed_spr = new Sprite(speedup_img_addr);
+//        speedup_img = speed_spr.getCurrentImage();
+//        Sprite bullet_spr = new Sprite(extrabullets_img_addr);
+//        extrabullets_img = bullet_spr.getCurrentImage();
+//        System.out.println("Props Images Loaded!");
     }
 
 }

@@ -4,7 +4,7 @@
 /*    */ import java.util.Map;
 /*    */ import mars.ProcessingException;
 /*    */ import mars.ProgramStatement;
-         import mars.ext.game.GameObject;
+import mars.ext.game.GameObject;
 /*    */ import mars.ext.game.GameScreen;
 /*    */ import mars.ext.game.MazeGameObject;
 /*    */ import mars.util.SystemIO;

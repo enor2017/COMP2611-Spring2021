@@ -8,8 +8,11 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 /**
@@ -935,6 +938,45 @@ public class MazeGameObject extends GameObject implements ActiveElementInterface
 	@Override
 	public void paint(Graphics graph) {
 		Graphics2D g2 = (Graphics2D) graph;
+
+		/*****  Add paint props  *****/
+		if(type == 10){
+			String f = GameConfigFile.properties.getProperty("heartimg");
+//			System.out.println("f = " + f);
+			Sprite sp = new Sprite(f);
+			BufferedImage tmp_img = sp.getCurrentImage();
+//			BufferedImage tmp_img = null;
+//			try {
+//				tmp_img = ImageIO.read(getClass().getResource(f));
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+			g2.drawImage(tmp_img, xLoc, yLoc, 16, 16, null);
+			System.out.println("In MazeGameObject -> paint");
+			return;
+		}
+		else if(type == 11){
+			String f = GameConfigFile.properties.getProperty("invimg");
+			Sprite sp = new Sprite(f);
+			BufferedImage tmp_img = sp.getCurrentImage();
+			g2.drawImage(tmp_img, xLoc, yLoc, 16, 16, null);
+			return;
+		}
+		else if(type == 12){
+			String f = GameConfigFile.properties.getProperty("speedimg");
+			Sprite sp = new Sprite(f);
+			BufferedImage tmp_img = sp.getCurrentImage();
+			g2.drawImage(tmp_img, xLoc, yLoc, 16, 16, null);
+			return;
+		}
+		else if(type == 13){
+			String f = GameConfigFile.properties.getProperty("extrabulletimg");
+			Sprite sp = new Sprite(f);
+			BufferedImage tmp_img = sp.getCurrentImage();
+			g2.drawImage(tmp_img, xLoc, yLoc, 16, 16, null);
+			return;
+		}
+
 //        g2.drawImage(images.get(curImageIndex), xLoc, yLoc, null);
 
 		int objectSize = Integer.parseInt(GameConfigFile.properties.getProperty("object"+type+"Size"));
@@ -942,6 +984,7 @@ public class MazeGameObject extends GameObject implements ActiveElementInterface
 		// where to draw objects
 //        g2.drawImage(images.get(curImageIndex), xLoc, yLoc, objectSize, objectSize, null);
 		int objectScale = 0;
+
 		if (type!=7)
 			g2.drawImage(images.get(curImageIndex), xLoc, yLoc, objectSize - objectScale, objectSize - objectScale, null);
 		else{

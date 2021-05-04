@@ -23,6 +23,7 @@ public class GameImage extends GameObject {
         /*
          * 地图数组
          * 1：水泥墙 2：铁墙 3：草 4：水 5：冰 9：家
+         * 10: heart, 11: invincible, 12: speedup, 13:extra_bullets
          */
 
         g2.setColor(Color.gray);
