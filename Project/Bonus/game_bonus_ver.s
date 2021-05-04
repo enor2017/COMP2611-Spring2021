@@ -1,3 +1,12 @@
+# 2021 Spring COMP2611 Project: Battle City
+# Name: LIU, Jianmeng
+# SID: 20760163
+# Email: jliudq@connect.ust.hk
+##################################################################
+###             This is bonus version with props.              ###
+###  All codes related with props is commented with three '#'  ###
+##################################################################
+
 .data
 # game setting
 enemy_num: 		.word 	0	# the number of enemys
@@ -61,6 +70,13 @@ maze_destroy:	.word -1:8			##### What's this?
 
 game_over_locs: .word 0xb0 0xc0		##### And this?
 game_win_locs: .word 0xb0 0xc0
+
+### props locations
+heart_locs: .word -1:2
+invincible_locs: .word -1:2
+speedup_locs: .word -1:2
+extrabullet_locs: .word -1:2
+
 # maze bit map
 # 1:brick wall 2:stone -1:river 0:open path or grass (since both tanks and bullets can go through grass, we denote grass as 0)
 maze_bitmap: .byte
@@ -295,34 +311,120 @@ ig_start:
 	li $v0, 103
 	syscall
 
+	### Randomly choose positions of props
+	### Arrange each in a certain area:
+	### - heart: left-top 1/4
+	### - invincible: right-top 1/4
+	### - speedup: left-bottom 1/4
+	### - extrabullet: right-bottom 1/4
+	### 26 x 26 cells, [0, 12], [13, 25]
+
+	### Set random seed
+	li $v0, 30  		### get system time
+	syscall
+	add $a1, $0, $a0  	### put time to random seed
+	li $a0, 0  			### use #0 generator
+	li $v0, 40
+	syscall
+
+
+	### randomly get a good position for prop: heart
+generate_heart_pos:
+	jal get_rand_coordinates
+	la $t9, heart_locs
+	sw $v0, 0($t9)
+	sw $v1, 4($t9)		### store coordinates into array, though it maybe improper
+
+	add $a0, $v0, $0
+	add $a1, $v1, $0
+	li $v0, 113			### call 113 to check if proper position
+	syscall
+	beq $v0, $0, generate_heart_pos
+
 	### create prop: heart
 	li $a0, 10
-	li $a1, 160
-	li $a2, 160
+	la $t9, heart_locs
+	lw $a1, 0($t9)
+	### remember the random coordinates we get is cell coordinates
+	### need to * 16
+	sll $a1, $a1, 4
+	lw $a2, 4($t9)
+	sll $a2, $a2, 4
 	li $a3, 10
 	li $v0, 103
 	syscall
 
-	### create prop: invincible
+	### invicible
+generate_invicible_pos:
+	jal get_rand_coordinates
+	la $t9, invincible_locs
+	addi $v0, $v0, 13	### put it in right-top 1/4
+	sw $v0, 0($t9)
+	sw $v1, 4($t9)		### store coordinates into array, though it maybe improper
+
+	add $a0, $v0, $0
+	add $a1, $v1, $0
+	li $v0, 113			### call 113 to check if proper position
+	syscall
+	beq $v0, $0, generate_invicible_pos
+
+	### create prop
 	li $a0, 11
-	li $a1, 0
-	li $a2, 0
+	la $t9, invincible_locs
+	lw $a1, 0($t9)
+	sll $a1, $a1, 4
+	lw $a2, 4($t9)
+	sll $a2, $a2, 4
 	li $a3, 11
 	li $v0, 103
 	syscall
 
-	### create prop: speedup
+	### speedup
+generate_speedup_pos:
+	jal get_rand_coordinates
+	la $t9, speedup_locs
+	addi $v1, $v1, 13	### put it in left-bottom 1/4
+	sw $v0, 0($t9)
+	sw $v1, 4($t9)		### store coordinates into array, though it maybe improper
+
+	add $a0, $v0, $0
+	add $a1, $v1, $0
+	li $v0, 113			### call 113 to check if proper position
+	syscall
+	beq $v0, $0, generate_speedup_pos
+
+	### create prop
 	li $a0, 12
-	li $a1, 16
-	li $a2, 16
+	la $t9, speedup_locs
+	lw $a1, 0($t9)
+	sll $a1, $a1, 4
+	lw $a2, 4($t9)
+	sll $a2, $a2, 4
 	li $a3, 12
 	li $v0, 103
 	syscall
 
-	### create prop: extrabullet
+generate_extrabullet_pos:
+	jal get_rand_coordinates
+	la $t9, extrabullet_locs
+	addi $v0, $v0, 13
+	addi $v1, $v1, 13
+	sw $v0, 0($t9)
+	sw $v1, 4($t9)		### store coordinates into array, though it maybe improper
+
+	add $a0, $v0, $0
+	add $a1, $v1, $0
+	li $v0, 113			### call 113 to check if proper position
+	syscall
+	beq $v0, $0, generate_extrabullet_pos
+
+	### create prop
 	li $a0, 13
-	li $a1, 32
-	li $a2, 64
+	la $t9, extrabullet_locs
+	lw $a1, 0($t9)
+	sll $a1, $a1, 4
+	lw $a2, 4($t9)
+	sll $a2, $a2, 4
 	li $a3, 13
 	li $v0, 103
 	syscall
@@ -340,6 +442,30 @@ ig_exit:
 	addi $sp, $sp, 12
 	jr $ra
 
+### procedure to get rand(x, y) both in [0, 12]
+get_rand_coordinates:
+	addi $sp, $sp, -4
+	sw $ra, 0($sp)
+
+	li $a0, 0
+	li $a1, 13  		### generate [0,13), set upper bound = 13
+	li $v0, 42
+	syscall
+	add $t0, $a0, $0	### store rand x in $t0
+	li $a0, 0
+	li $a1, 13  		
+	li $v0, 42
+	syscall
+	add $t1, $a0, $0	### store rand y in $t1
+
+	### store in $v0, $v1
+	add $v0, $t0, $0
+	add $v1, $t1, $0
+
+	### return
+	lw $ra, 0($sp)
+	addi $sp, $sp, 4
+	jr $ra
 
 #--------------------------------------------------------------------
 # procedure: have_a_nap(nap_time)

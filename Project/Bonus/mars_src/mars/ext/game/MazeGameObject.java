@@ -952,7 +952,7 @@ public class MazeGameObject extends GameObject implements ActiveElementInterface
 //				e.printStackTrace();
 //			}
 			g2.drawImage(tmp_img, xLoc, yLoc, 16, 16, null);
-			System.out.println("In MazeGameObject -> paint");
+//			System.out.println("In MazeGameObject -> paint");
 			return;
 		}
 		else if(type == 11){

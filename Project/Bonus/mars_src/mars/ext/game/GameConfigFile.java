@@ -37,14 +37,14 @@ public class GameConfigFile {
     public static int[] extrabullets_position = new int[2];
 
     /*****  Store props images  *****/
-    private final String heart_img_addr = "../../../game/images/heart.png";
-    private final String invincible_img_addr = "/game/images/invincible.png";
-    private final String speedup_img_addr = "/game/images/speed.png";
-    private final String extrabullets_img_addr = "/game/images/extrabullets.png";
-    public static BufferedImage heart_img;
-    public static BufferedImage invincible_img;
-    public static BufferedImage speedup_img;
-    public static BufferedImage extrabullets_img;
+//    private final String heart_img_addr = "../../../game/images/heart.png";
+//    private final String invincible_img_addr = "/game/images/invincible.png";
+//    private final String speedup_img_addr = "/game/images/speed.png";
+//    private final String extrabullets_img_addr = "/game/images/extrabullets.png";
+//    public static BufferedImage heart_img;
+//    public static BufferedImage invincible_img;
+//    public static BufferedImage speedup_img;
+//    public static BufferedImage extrabullets_img;
 
     static final int offsetX = 32; //主游戏区的X偏移量
     static final int offsetY = 16;//主游戏区的Y偏移量

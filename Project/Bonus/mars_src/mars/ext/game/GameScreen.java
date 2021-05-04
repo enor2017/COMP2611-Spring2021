@@ -126,6 +126,8 @@ public class GameScreen extends JFrame {
         if (propertyStr != null) {
             if(mazeBitmap==null)
                 createMazeBitmap(propertyStr);
+//            System.out.println("propertyStr = " + propertyStr);
+//            System.out.println("Inside GameScreen -> loadMaze");
             this.mazeImage = new GameImage(-2, 0, 0, mazeBitmap, width, height, mazeWidth, mazeHeight, gameLevel);
         }
     }
@@ -275,8 +277,8 @@ public class GameScreen extends JFrame {
                 GameObject obj = entry.getValue();
                 /*****  Check if obj is null, since we left blank obj type numbers  *****/
                 if(obj != null) {
-                    System.out.println("Painting " + i + " at (" + obj.getXLoc() + ", " +
-                            obj.getYLoc() + ").");
+//                    System.out.println("Painting " + i + " at (" + obj.getXLoc() + ", " +
+//                            obj.getYLoc() + ").");
                     obj.paint(g2);
                 }
             }
@@ -355,4 +357,8 @@ public class GameScreen extends JFrame {
         }
     }
 
+    /*****  Make mazeBitmap public for props position check  *****/
+    public int[][] getMazeBitmap() {
+        return mazeBitmap;
+    }
 }
