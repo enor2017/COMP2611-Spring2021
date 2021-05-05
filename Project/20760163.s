@@ -524,8 +524,6 @@ nb_up_bullet:
 
 nb_down_bullet:
 	sub $s1, $s1, $s3
-	add $s2, $s2, $s3
-	add $s2, $s2, $s3
 	addi $s2, $s2, 16
 	la $t0, bullet_locs
 	sw $s1, 0($t0)
@@ -536,9 +534,10 @@ nb_down_bullet:
 	
 
 nb_left_bullet:
-	add $s2, $s2, $s3
-	addi $s2, $s2, -6	# since (x,y) is left-top coordinate, need to minus bullet size
+	sub $s2, $s2, $s3
 	addi $s1, $s1, -16
+	sub $s1, $s1, $s3
+	sub $s1, $s1, $s3
 	la $t0, bullet_locs
 	sw $s1, 0($t0)
 	sw $s2, 4($t0)
