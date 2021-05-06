@@ -2,10 +2,10 @@
 # Name: LIU, Jianmeng
 # SID: 20760163
 # Email: jliudq@connect.ust.hk
-##################################################################
-###             This is bonus version with props.              ###
-###  All codes related with props is commented with three '#'  ###
-##################################################################
+#################################################################
+###             This is bonus version with props.             ###
+###  All codes related to props are commented with three '#'  ###
+#################################################################
 
 .data
 # game setting
@@ -76,6 +76,21 @@ heart_locs: .word -1:2
 invincible_locs: .word -1:2
 speedup_locs: .word -1:2
 extrabullet_locs: .word -1:2
+
+### props status (1: in effect)
+heart_status: .word 0
+invincible_status: .word 0
+speedup_status: .word 0
+extrabullet_status: .word 0
+
+### props begin time record
+# heart_begin: .word -1     ### heart prop doesn't need time record
+invincible_begin: .word -1
+speedup_begin: .word -1
+extrabullet_begin: .word -1
+
+### props last time: 10s
+props_last: .word 10000
 
 # maze bit map
 # 1:brick wall 2:stone -1:river 0:open path or grass (since both tanks and bullets can go through grass, we denote grass as 0)
@@ -1295,9 +1310,197 @@ pmi_move_right:
 	jal move_player_right		
 
 pmi_after_move:
-	bne $v0, $zero, pmi_exit # actual movement has been made
+	### if actual movement has been made	
+	### check whether player collides with any props
+	bne $v0, $zero, check_props_collide 
+	# bne $v0, $zero, pmi_exit    # this is original code
 	la $t6, move_iteration
 	sw $zero, 0($t6) # current movement is blocked by a wall, so no more movements in later iterations for the move_key
+	j pmi_exit
+
+### player collides with a props iff the prop is INSIDE player's tank
+check_props_collide:
+	### get player's position
+	### $t1: player_x,  $t2: player_y
+	la $t0, player_locs
+	lw $t1, 0($t0) 
+	lw $t2, 4($t0)
+
+### $t3: prop_x,  $t4: prop_y
+### REMEMBER the location of props are CELL COORDINATES!!!
+### This wastes me ONE HOUR!!!
+check_collide_heart:
+	la $t0, heart_locs
+	lw $t3, 0($t0)
+	lw $t4, 4($t0)
+	sll $t3, $t3, 4
+	sll $t4, $t4, 4
+
+	### if ($t1 - 1 < $t3 < $t1 + 24) AND ($t2 - 1 < $t4 < $t2 + 24), collides!
+	addi $t5, $t1, -1
+	slt $t6, $t5, $t3
+	beq $t6, $0, check_collide_incinvible
+	addi $t5, $t1, 24
+	slt $t6, $t3, $t5
+	beq $t6, $0, check_collide_incinvible
+	addi $t5, $t2, -1
+	slt $t6, $t5, $t4
+	beq $t6, $0, check_collide_incinvible
+	addi $t5, $t2, 24
+	slt $t6, $t4, $t5
+	beq $t6, $0, check_collide_incinvible
+
+	### reach here means collision happens!
+
+	### enable heart
+	la $t5, heart_status
+	addi $t6, $0, 1
+	sw $t6, 0($t5)
+
+	### heart props DOESN'T NEED time record
+
+move_heart:
+	### move prop to (1000, 1000) (hide it)
+	li $v0, 104
+	li $a0, 10
+	li $a1, 1000
+	li $a2, 1000
+	li $a3, 10
+	syscall
+
+check_collide_incinvible:
+	la $t0, invincible_locs
+	lw $t3, 0($t0)
+	lw $t4, 4($t0)
+	sll $t3, $t3, 4
+	sll $t4, $t4, 4
+
+	### if ($t1 - 1 < $t3 < $t1 + 24) AND ($t2 - 1 < $t4 < $t2 + 24), collides!
+	addi $t5, $t1, -1
+	slt $t6, $t5, $t3
+	beq $t6, $0, check_collide_speedup
+	addi $t5, $t1, 24
+	slt $t6, $t3, $t5
+	beq $t6, $0, check_collide_speedup
+	addi $t5, $t2, -1
+	slt $t6, $t5, $t4
+	beq $t6, $0, check_collide_speedup
+	addi $t5, $t2, 24
+	slt $t6, $t4, $t5
+	beq $t6, $0, check_collide_speedup
+
+	### reach here means collision happens!
+
+	### enable invincible
+	la $t5, invincible_status
+	addi $t6, $0, 1
+	sw $t6, 0($t5)
+
+	### set begin timestamp
+	li $v0, 30
+	syscall
+	add $t6, $0, $a0
+	la $t5, invincible_begin
+	sw $t6, 0($t5)
+
+move_incinvible:
+	### move prop to (1000, 1000) (hide it)
+	li $v0, 104
+	li $a0, 11
+	li $a1, 1000
+	li $a2, 1000
+	li $a3, 11
+	syscall
+
+check_collide_speedup:
+	la $t0, speedup_locs
+	lw $t3, 0($t0)
+	lw $t4, 4($t0)
+	sll $t3, $t3, 4
+	sll $t4, $t4, 4
+
+	### if ($t1 - 1 < $t3 < $t1 + 24) AND ($t2 - 1 < $t4 < $t2 + 24), collides!
+	addi $t5, $t1, -1
+	slt $t6, $t5, $t3
+	beq $t6, $0, check_collide_extrabullet
+	addi $t5, $t1, 24
+	slt $t6, $t3, $t5
+	beq $t6, $0, check_collide_extrabullet
+	addi $t5, $t2, -1
+	slt $t6, $t5, $t4
+	beq $t6, $0, check_collide_extrabullet
+	addi $t5, $t2, 24
+	slt $t6, $t4, $t5
+	beq $t6, $0, check_collide_extrabullet
+
+	### reach here means collision happens!
+
+	### enable speedup
+	la $t5, speedup_status
+	addi $t6, $0, 1
+	sw $t6, 0($t5)
+
+	### set begin timestamp
+	li $v0, 30
+	syscall
+	add $t6, $0, $a0
+	la $t5, speedup_begin
+	sw $t6, 0($t5)
+
+move_speedup:
+	### move prop to (1000, 1000) (hide it)
+	li $v0, 104
+	li $a0, 12
+	li $a1, 1000
+	li $a2, 1000
+	li $a3, 12
+	syscall
+
+check_collide_extrabullet:
+	la $t0, extrabullet_locs
+	lw $t3, 0($t0)
+	lw $t4, 4($t0)
+	sll $t3, $t3, 4
+	sll $t4, $t4, 4
+
+	### if ($t1 - 1 < $t3 < $t1 + 24) AND ($t2 - 1 < $t4 < $t2 + 24), collides!
+	addi $t5, $t1, -1
+	slt $t6, $t5, $t3
+	beq $t6, $0, pmi_exit
+	addi $t5, $t1, 24
+	slt $t6, $t3, $t5
+	beq $t6, $0, pmi_exit
+	addi $t5, $t2, -1
+	slt $t6, $t5, $t4
+	beq $t6, $0, pmi_exit
+	addi $t5, $t2, 24
+	slt $t6, $t4, $t5
+	beq $t6, $0, pmi_exit
+
+	### reach here means collision happens!
+
+	### enable heart
+	la $t5, extrabullet_status
+	addi $t6, $0, 1
+	sw $t6, 0($t5)
+
+	### set begin timestamp
+	li $v0, 30
+	syscall
+	add $t6, $0, $a0
+	la $t5, extrabullet_begin
+	sw $t6, 0($t5)
+
+move_extrabullet:
+	### move prop to (1000, 1000) (hide it)
+	li $v0, 104
+	li $a0, 13
+	li $a1, 1000
+	li $a2, 1000
+	li $a3, 13
+	syscall
+
+	### after checking colliding with props, goto pmi_exit.
 	j pmi_exit
 
 pmi_exit: 

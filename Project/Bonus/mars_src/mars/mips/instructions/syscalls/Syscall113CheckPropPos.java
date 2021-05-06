@@ -29,13 +29,13 @@ public class Syscall113CheckPropPos extends AbstractSyscall{
         }
         int[][] mazeBitmap = gameScreen.getMazeBitmap();
         // (For debug) Print mazeBitmap
-        for(int i = 0 ; i < mazeBitmap.length; ++i){
-            for(int j = 0 ; j < mazeBitmap[i].length; ++j){
-                System.out.print(mazeBitmap[i][j]);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
+//        for(int i = 0 ; i < mazeBitmap.length; ++i){
+//            for(int j = 0 ; j < mazeBitmap[i].length; ++j){
+//                System.out.print(mazeBitmap[i][j]);
+//                System.out.print(" ");
+//            }
+//            System.out.println();
+//        }
 
         // If position seems good, set $v0 = 1
         // Note here x and y is reversed.
