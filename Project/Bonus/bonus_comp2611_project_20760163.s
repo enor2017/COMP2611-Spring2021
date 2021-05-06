@@ -180,11 +180,93 @@ game_enemy_shoot:
 	la $t0, enemy_num
 	lw $t1, 0($t0)
 	li $t2,1
-	beq $t1, $t2,game_refresh
+	beq $t1, $t2, update_props
+	# beq $t1, $t2, game_refresh  ### original code
 	li $a0, 1
 	jal enemy_shoot
 
+### here, we check whether props are still in effect (check time)
+### if not, hide prop's text, set prop's status to 0
+update_props:
+	la $t0, invincible_begin
+	lw $t0, 0($t0)
+	la $t1, speedup_begin
+	lw $t1, 0($t1)
+	la $t2, extrabullet_begin
+	lw $t2, 0($t2)
 
+	### get current time in $t3, check whether has passed 10s
+	li $v0, 30
+	syscall
+	add $t3, $a0, $0
+	addi $t3, $t3, -10000
+	### any prop begins before $t3 will be expired
+check_invincible_expire:
+	la $t4, invincible_status
+	lw $t4, 0($t4)
+	beq $t4, $0, check_speedup_expire  ### if (status == 0) , no need to check
+	slt $t0, $t0, $t3
+	bne $t0, $0, process_invincible_expire
+	j check_speedup_expire
+
+process_invincible_expire:
+	### set status to 0
+	add $t5, $0, $0
+	la $t4, invincible_status
+	sw $t5, 0($t4)
+
+	### hide text
+	li $v0, 104
+	li $a0, 15
+	li $a1, 1000
+	li $a2, 1000
+	li $a3, 3		### type of text is 3.
+	syscall
+
+check_speedup_expire:
+	la $t4, speedup_status
+	lw $t4, 0($t4)
+	beq $t4, $0, check_extrabullet_expire  ### if (status == 0) , no need to check
+	slt $t1, $t1, $t3
+	bne $t1, $0, process_speedup_expire
+	j check_extrabullet_expire
+
+process_speedup_expire:
+	### set status to 0
+	add $t5, $0, $0
+	la $t4, speedup_status
+	sw $t5, 0($t4)
+
+	### hide text
+	li $v0, 104
+	li $a0, 16
+	li $a1, 1000
+	li $a2, 1000
+	li $a3, 3
+	syscall
+
+check_extrabullet_expire:
+	la $t4, extrabullet_status
+	lw $t4, 0($t4)
+	beq $t4, $0, game_refresh  ### if (status == 0) , no need to check
+	slt $t2, $t2, $t3
+	bne $t2, $0, process_extrabullet_expire
+	j game_refresh
+
+process_extrabullet_expire:
+	### set status to 0
+	add $t5, $0, $0
+	la $t4, extrabullet_status
+	sw $t5, 0($t4)
+
+	### hide text
+	li $v0, 104
+	li $a0, 17
+	li $a1, 1000
+	li $a2, 1000
+	li $a3, 3
+	syscall
+	
 
 game_refresh: # refresh screen
 	li $v0, 101
@@ -1376,6 +1458,10 @@ check_collide_heart:
 
 move_heart:
 	### move prop to (1000, 1000) (hide it)
+	la $t5, heart_locs
+	li $t6, 1000
+	sw $t6, 0($t5)
+	sw $t6, 4($t5)
 	li $v0, 104
 	li $a0, 10
 	li $a1, 1000
@@ -1429,6 +1515,10 @@ check_collide_incinvible:
 
 move_incinvible:
 	### move prop to (1000, 1000) (hide it)
+	la $t5, invincible_locs
+	li $t6, 1000
+	sw $t6, 0($t5)
+	sw $t6, 4($t5)
 	li $v0, 104
 	li $a0, 11
 	li $a1, 1000
@@ -1482,6 +1572,10 @@ check_collide_speedup:
 
 move_speedup:
 	### move prop to (1000, 1000) (hide it)
+	la $t5, speedup_locs
+	li $t6, 1000
+	sw $t6, 0($t5)
+	sw $t6, 4($t5)
 	li $v0, 104
 	li $a0, 12
 	li $a1, 1000
@@ -1535,6 +1629,10 @@ check_collide_extrabullet:
 
 move_extrabullet:
 	### move prop to (1000, 1000) (hide it)
+	la $t5, extrabullet_locs
+	li $t6, 1000
+	sw $t6, 0($t5)
+	sw $t6, 4($t5)
 	li $v0, 104
 	li $a0, 13
 	li $a1, 1000

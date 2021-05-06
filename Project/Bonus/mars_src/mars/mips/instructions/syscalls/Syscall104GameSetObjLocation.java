@@ -2,9 +2,8 @@
 /*    */ 
 /*    */ import mars.ProcessingException;
 /*    */ import mars.ProgramStatement;
-/*    */ import mars.ext.game.GameConfigFile;
-import mars.ext.game.GameScreen;
-/*    */ import mars.ext.game.MazeGameObject;
+/*    */ import mars.ext.game.*;
+/*    */
 /*    */ import mars.mips.hardware.RegisterFile;
 /*    */ import mars.util.SystemIO;
 /*    */ 
@@ -30,7 +29,19 @@ import mars.ext.game.GameScreen;
 /*    */       
 /* 30 */       SystemIO.printString("GameScreen has not been created!");
 /* 31 */       throw new ProcessingException();
-/*    */     } 
+/*    */     }
+
+            /*****  GameTextObject cannot be cast to MazeGameObject  *****/
+            if(m == 3){
+                GameObject textobj = gameScreen.getGameObject(i, m);
+                if(textobj == null){
+                    SystemIO.printString("TextObject: id=" + i + " of type=" + m + " does not exist!");
+                    throw new ProcessingException();
+                }
+                textobj.setLocations(j, k);
+                return;
+            }
+
 /* 33 */     MazeGameObject mazeGameObject = (MazeGameObject)gameScreen.getGameObject(i, m);
 /* 34 */     if (mazeGameObject == null) {
 /*    */       
