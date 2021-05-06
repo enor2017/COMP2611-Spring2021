@@ -2,7 +2,8 @@
 /*    */ 
 /*    */ import mars.ProcessingException;
 /*    */ import mars.ProgramStatement;
-/*    */ import mars.ext.game.GameObject;
+/*    */ import mars.ext.game.GameException;
+import mars.ext.game.GameObject;
 /*    */ import mars.ext.game.GameScreen;
 /*    */ import mars.ext.game.GameTextObject;
 /*    */ import mars.mips.hardware.RegisterFile;
@@ -36,7 +37,15 @@
 /*    */       
 /* 37 */       SystemIO.printString("In Creating Text Object, but GameScreen has not been created first!");
 /* 38 */       throw new ProcessingException();
-/*    */     } 
+/*    */     }
+
+            /*****  Set props text style  *****/
+            if(i >= 14 && i <= 17){
+                try {
+                    gameTextObject.setFontSize(12);
+                    gameTextObject.setColor(16777215);  // #ffffff, white
+                } catch (Exception another_exception) {}
+            }
 /* 40 */     gameScreen.addGameObject(i, (GameObject)gameTextObject, 3);
 /*    */   }
 /*    */ }

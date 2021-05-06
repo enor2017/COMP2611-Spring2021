@@ -89,6 +89,12 @@ invincible_begin: .word -1
 speedup_begin: .word -1
 extrabullet_begin: .word -1
 
+### props text
+heart_text: .asciiz "Heart"
+invincible_text: .asciiz "Invincible"
+speedup_text: .asciiz "SpeedUp"
+extrabullet_text: .asciiz "ExtraBullet"
+
 ### props last time: 10s
 props_last: .word 10000
 
@@ -1357,6 +1363,15 @@ check_collide_heart:
 	addi $t6, $0, 1
 	sw $t6, 0($t5)
 
+	### create text on screen
+	### text object ID: 14, 15, 16, 17
+	li $v0, 105
+	li $a0, 14
+	li $a1, 0
+	li $a2, -5
+	la $a3, heart_text
+	syscall
+
 	### heart props DOESN'T NEED time record
 
 move_heart:
@@ -1395,6 +1410,15 @@ check_collide_incinvible:
 	la $t5, invincible_status
 	addi $t6, $0, 1
 	sw $t6, 0($t5)
+
+	### create text on screen
+	### text object ID: 14, 15, 16, 17
+	li $v0, 105
+	li $a0, 15
+	li $a1, 40
+	li $a2, -5
+	la $a3, invincible_text
+	syscall
 
 	### set begin timestamp
 	li $v0, 30
@@ -1440,6 +1464,15 @@ check_collide_speedup:
 	addi $t6, $0, 1
 	sw $t6, 0($t5)
 
+	### create text on screen
+	### text object ID: 14, 15, 16, 17
+	li $v0, 105
+	li $a0, 16
+	li $a1, 120
+	li $a2, -5
+	la $a3, speedup_text
+	syscall
+
 	### set begin timestamp
 	li $v0, 30
 	syscall
@@ -1479,10 +1512,19 @@ check_collide_extrabullet:
 
 	### reach here means collision happens!
 
-	### enable heart
+	### enable extrabullet
 	la $t5, extrabullet_status
 	addi $t6, $0, 1
 	sw $t6, 0($t5)
+
+	### create text on screen
+	### text object ID: 14, 15, 16, 17
+	li $v0, 105
+	li $a0, 17
+	li $a1, 190
+	li $a2, -5
+	la $a3, extrabullet_text
+	syscall
 
 	### set begin timestamp
 	li $v0, 30
