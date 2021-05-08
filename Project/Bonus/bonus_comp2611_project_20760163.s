@@ -79,12 +79,16 @@ extrabullet_locs: .word -1:2
 
 ### props status (1: in effect)
 heart_status: .word 0
+### notice that after 2nd heart is shot, you need to provide
+### a protection, in case bullet collision is detected twice.
+heart_inv_protect: .word 0
 invincible_status: .word 0
 speedup_status: .word 0
 extrabullet_status: .word 0
 
 ### props begin time record
 # heart_begin: .word -1     ### heart prop doesn't need time record
+heart_inv_protect_begin: .word -1 	### but heart_invincible_protect needs.
 invincible_begin: .word -1
 speedup_begin: .word -1
 extrabullet_begin: .word -1
@@ -194,6 +198,8 @@ update_props:
 	lw $t1, 0($t1)
 	la $t2, extrabullet_begin
 	lw $t2, 0($t2)
+	la $t9, heart_inv_protect_begin
+	lw $t9, 0($t9)
 
 	### get current time in $t3, check whether has passed 10s
 	li $v0, 30
@@ -248,10 +254,10 @@ process_speedup_expire:
 check_extrabullet_expire:
 	la $t4, extrabullet_status
 	lw $t4, 0($t4)
-	beq $t4, $0, game_refresh  ### if (status == 0) , no need to check
+	beq $t4, $0, check_heart_protect_expire  ### if (status == 0) , no need to check
 	slt $t2, $t2, $t3
 	bne $t2, $0, process_extrabullet_expire
-	j game_refresh
+	j check_heart_protect_expire
 
 process_extrabullet_expire:
 	### set status to 0
@@ -266,6 +272,21 @@ process_extrabullet_expire:
 	li $a2, 1000
 	li $a3, 3
 	syscall
+
+check_heart_protect_expire:
+	la $t4, heart_inv_protect
+	lw $t4, 0($t4)
+	beq $t4, $0, game_refresh  ### if (status == 0) , no need to check
+	addi $t3, $t3, 8000 	### only give 2 seconds for protection
+	slt $t2, $t9, $t3
+	bne $t2, $0, process_heart_protect_expire
+	j game_refresh
+
+process_heart_protect_expire:
+	### set status to 0
+	add $t5, $0, $0
+	la $t4, heart_inv_protect
+	sw $t5, 0($t4)
 	
 
 game_refresh: # refresh screen
@@ -307,7 +328,7 @@ enemy_shoot:
 	syscall
 	li $t0,1
 	beq $v0, $t0, es_gameover # $v0=1 means enemy bullet hits the player or the home and the player loses.
-	li $t0,2
+	li $t0,2 
 	beq $v0, $t0, es_bullet_crash # $v0=2 means enemy bullet hits the player's bullet and they both disappear.
 	beq $v1, $zero, es_exit # $v1=1 or 2 denotes the number of brick walls the enemy bullet hits.
 	la $t0, maze_bitmap # edit bitmap
@@ -320,11 +341,60 @@ enemy_shoot:
 	sb $zero, 0($t0)
 es_exit:
 	jr $ra
+
 es_gameover:
+	### here we need to check whether player has extra life/ incinvible
+	### ATTENTION:
+	### We need to check invincible before checking heart
+	### in case player has both prop
+check_invincible:
+	la $t0, invincible_status
+	lw $t0, 0($t0)
+	beq $t0, $0, check_heart
+	j es_exit		### if invincible = on, just return, game continue
+
+check_heart:
+	la $t0, heart_status
+	lw $t0, 0($t0)
+	beq $t0, $0, check_heart_protect
+heart_expire:
+	### set heart_status to 0, 
+	la $t0, heart_status
+	sw $0, 0($t0)
+	### remove heart prop text
+	li $v0, 104
+	li $a0, 14
+	li $a1, 1000
+	li $a2, 1000
+	li $a3, 3		### type of text is 3.
+	syscall
+
+	### also, enable heart_inv_protect
+	la $t0, heart_inv_protect
+	li $t1, 1
+	sw $t1, 0($t0)
+	### set heart_inv_protect_begin time
+	li $v0, 30
+	syscall
+	la $t0, heart_inv_protect_begin
+	sw $a0, 0($t0)
+
+	j es_exit
+
+### if heart_inv_protect is enable, just regard it as invincible
+check_heart_protect:
+	la $t0, heart_inv_protect
+	lw $t0, 0($t0)
+	beq $t0, $0, es_gameover_original
+	j es_exit		### if invincible = on, just return, game continue
+
+
+es_gameover_original:
 	la $t0, game_over
 	li $t1,1
 	sw $t1,0($t0)
 	j es_exit
+
 es_bullet_crash:
 	la $t0, remaining_bullet
 	lw $t1, 0($t0)
@@ -1728,6 +1798,13 @@ move_player_up:
 
 		la $t0, player_speed
 		lw $t3, 0($t0) # player speed
+		### If prop 'SpeedUP' is enabled, speed = speed * 2
+		la $t5, speedup_status
+		lw $t5, 0($t5)
+		beq $t5, $0, move_player_up_cont
+		sll $t3, $t3, 1
+		
+move_player_up_cont:
 		la $s2, player_locs
 		lw $s0, 0($s2) # x_loc
 		lw $s1, 4($s2) # y_loc
@@ -1800,6 +1877,13 @@ move_player_down:
 
 		la $t0, player_speed
 		lw $t3, 0($t0) # player speed
+		### If prop 'SpeedUP' is enabled, speed = speed * 2
+		la $t5, speedup_status
+		lw $t5, 0($t5)
+		beq $t5, $0, move_player_down_cont
+		sll $t3, $t3, 1
+		
+move_player_down_cont:
 		la $s2, player_locs
 		lw $s0, 0($s2) # x_loc
 		lw $s1, 4($s2) # y_loc
@@ -1896,6 +1980,13 @@ move_player_left:
 
 		la $t0, player_speed
 		lw $t3, 0($t0) # player speed
+		### If prop 'SpeedUP' is enabled, speed = speed * 2
+		la $t5, speedup_status
+		lw $t5, 0($t5)
+		beq $t5, $0, move_player_left_cont
+		sll $t3, $t3, 1
+		
+move_player_left_cont:
 		la $s2, player_locs
 		lw $s0, 0($s2) # x_loc
 		lw $s1, 4($s2) # y_loc
@@ -1986,6 +2077,13 @@ move_player_right:
 
 		la $t0, player_speed
 		lw $t3, 0($t0) # player speed
+		### If prop 'SpeedUP' is enabled, speed = speed * 2
+		la $t5, speedup_status
+		lw $t5, 0($t5)
+		beq $t5, $0, move_player_right_cont
+		sll $t3, $t3, 1
+		
+move_player_right_cont:
 		la $s2, player_locs
 		lw $s0, 0($s2) # x_loc
 		lw $s1, 4($s2) # y_loc
