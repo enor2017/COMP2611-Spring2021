@@ -577,30 +577,31 @@ generate_speedup_pos:
 	li $v0, 103
 	syscall
 
-generate_extrabullet_pos:
-	jal get_rand_coordinates
-	la $t9, extrabullet_locs
-	addi $v0, $v0, 13
-	addi $v1, $v1, 13
-	sw $v0, 0($t9)
-	sw $v1, 4($t9)		### store coordinates into array, though it maybe improper
+### This prop has been deleted due to limit of time >_< 
+# generate_extrabullet_pos:
+# 	jal get_rand_coordinates
+# 	la $t9, extrabullet_locs
+# 	addi $v0, $v0, 13
+# 	addi $v1, $v1, 13
+# 	sw $v0, 0($t9)
+# 	sw $v1, 4($t9)		### store coordinates into array, though it maybe improper
 
-	add $a0, $v0, $0
-	add $a1, $v1, $0
-	li $v0, 113			### call 113 to check if proper position
-	syscall
-	beq $v0, $0, generate_extrabullet_pos
+# 	add $a0, $v0, $0
+# 	add $a1, $v1, $0
+# 	li $v0, 113			### call 113 to check if proper position
+# 	syscall
+# 	beq $v0, $0, generate_extrabullet_pos
 
-	### create prop
-	li $a0, 13
-	la $t9, extrabullet_locs
-	lw $a1, 0($t9)
-	sll $a1, $a1, 4
-	lw $a2, 4($t9)
-	sll $a2, $a2, 4
-	li $a3, 13
-	li $v0, 103
-	syscall
+# 	### create prop
+# 	li $a0, 13
+# 	la $t9, extrabullet_locs
+# 	lw $a1, 0($t9)
+# 	sll $a1, $a1, 4
+# 	lw $a2, 4($t9)
+# 	sll $a2, $a2, 4
+# 	li $a3, 13
+# 	li $v0, 103
+# 	syscall
 
 ig_exit:
 	# li $a0, 30000 # iteration gap: 30 milliseconds
